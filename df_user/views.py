@@ -1,13 +1,14 @@
 from django.shortcuts import render, redirect
-from models import UserInfo, AddressInfo
+from django.http import JsonResponse, HttpResponseRedirect
+from models import UserInfo
 from hashlib import sha1
 
 
 # Create your views here.
 def register(request):
     if request.method == 'GET':
-        context = {'title': 'sign up'}
-        return render(request, 'df_user/register.html', context)
+        return render(request, 'df_user/register.html', {'title': 'sign up'})
+
     elif request.method == 'POST':
         body = request.POST
         uname = body.get('user_name')
@@ -32,6 +33,35 @@ def register(request):
         return redirect('/user/login/')
 
 
+def register_exist(request):
+    uname = request.GET.get('uname')
+    count = UserInfo.objects.filter(uname=uname).count()
+    return JsonResponse({'count': count})
+
+
 def login(request):
     if request.method == 'GET':
-        return render(request, 'df_user/login.html')
+        uname = request.COOKIES.get('uname', '')
+        return render(request, 'df_user/login.html', {'title': 'sign in', 'uname': uname, 'error': 0})
+
+    elif request.method == 'POST':
+        body = request.POST
+        uname = body.get('username')
+        upwd = body.get('pwd')
+        uremember = body.get('remember', 0)
+
+        users = UserInfo.objects.filter(uname=uname)
+        if len(users) < 1:
+            return render(request, 'df_user/login.html', {'title': 'sign in', 'uname': uname, 'error': 1})
+
+        sha = sha1()
+        sha.update(upwd)
+        if sha.hexdigest() == users[0].upwd:
+            red = HttpResponseRedirect('/street/index/')
+
+            if uremember:
+                red.set_cookie('uname', uname)
+
+            request.session['user_id'] = users[0].id
+            request.session['user_name'] = uname
+            return red
