@@ -1,10 +1,10 @@
 $(function(){
 
-	var error_name = false;
-	var error_password = false;
-	var error_check_password = false;
-	var error_email = false;
-	var error_check = false;
+	var error_name = true;
+	var error_password = true;
+	var error_check_password = true;
+	var error_email = true;
+	var error_check = true;
 
 
 	$('#user_name').blur(function() {
@@ -48,6 +48,17 @@ $(function(){
 		}
 		else
 		{
+		    $.get('/user/register_exist/?uname=' + $('#user_name').val(), function (data) {
+		        if(data.count == 1) {
+		            $('#user_name').next().html('username exists').show();
+		            error_name = true;
+                } else {
+		            $('#user_name').next().hide();
+                    error_name = false;
+                }
+
+            })
+
 			$('#user_name').next().hide();
 			error_name = false;
 		}
@@ -105,7 +116,7 @@ $(function(){
 	}
 
 
-	$('#form').submit(function(e) {
+	$('form').submit(function(e) {
 		check_user_name();
 		check_pwd();
 		check_cpwd();
