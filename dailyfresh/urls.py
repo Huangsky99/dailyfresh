@@ -15,8 +15,11 @@ Including another URLconf
 """
 from django.conf.urls import include, url
 from django.contrib import admin
+from df_street import views
 
 urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
     url(r'^user/', include('df_user.urls')),
+    url(r'^$', views.index),
+    url(r'^street/', include('df_street.urls')),
 ]
