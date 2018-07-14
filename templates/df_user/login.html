@@ -11,6 +11,29 @@
             $('.user_error').html('username or password is incorrect').show();
         }
 
+        function check_username(){
+            var len = $('input.name_input').val().length;
+            if(len < 5 || len > 20) {
+                $('.user_error').html('username incorrect').show();
+            } else {
+                $('.user_error').hide();
+                error_check = false;
+            }
+        };
+
+        $('input.name_input').blur(function(){
+            check_username();
+        });
+
+        $('form').submit(function(e) {
+            check_username();
+
+            if(error_check == true) {
+                e.preventDefault();
+            }
+
+        })
+
     });
 
 
@@ -19,7 +42,7 @@
 
 <body>
 	<div class="login_top clearfix">
-		<a href="#" class="login_logo"><img src="/static/images/logo02.png"></a>
+		<a href="/" class="login_logo"><img src="/static/images/logo02.png"></a>
 	</div>
 
 	<div class="login_form_bg">
