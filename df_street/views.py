@@ -32,4 +32,4 @@ def user_order(request):
 
 
 def user_site(request):
-    return  render(request, 'df_street/user_center_site.html', {'title': 'user_site'})
+    return render(request, 'df_street/user_center_site.html', {'title': 'user_site'})
